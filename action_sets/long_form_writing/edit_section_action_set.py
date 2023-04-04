@@ -67,4 +67,4 @@ sdf_action_list = [
     }
 ]
 
-sdf_action_set = {"name": "sdf_action_set", "actions": sdf_action_list}
+edit_section_action_set = {"name": "sdf_action_set", "actions": sdf_action_list}

@@ -159,4 +159,4 @@ writing_actions_list = [
     },
 ]
 
-writer_mode_action_set = {"name": "writer_mode_actions", "actions": writing_actions_list}
+writing_action_set = {"name": "writer_mode_actions", "actions": writing_actions_list}

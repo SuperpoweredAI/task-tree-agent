@@ -1,15 +1,18 @@
 """
 The following module contains the classes for the SDF document format, which is used to represent a long-form document in a way that is easy for LLMs to understand and manipulate.
+
+This is an example of creating an action set that itself uses an agent w/ tools framework, which is why we import the ActionInterface class.
 """
 
 import sys
 import os
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(current_dir+'/../elegant_infinite_agent/')
+sys.path.append(current_dir+'/../../agent')
 
 from utils import openai_api_call
 from action_interface import ActionInterface, RESPONSE_FORMATTING_INSTRUCTIONS
-from SDF_action_list import sdf_action_set
+from edit_section_action_set import edit_section_action_set
 from SDF_prompt_template import EDIT_SECTION, READ_AND_ANALYZE
 
 class Element:
@@ -57,7 +60,7 @@ class Section:
 
 
 class Document:
-    def __init__(self, title, human_notes="", section_type='Section', model_name="gpt-3.5-turbo"):
+    def __init__(self, title, human_notes="", section_type='Section', model_name="gpt-4"):
         self.title = title
         self.human_notes = human_notes
         self.section_type = section_type
@@ -67,8 +70,8 @@ class Document:
         self.character_descriptions = {}
         self.locations = {}
         self.themes = {}
-        self.action_interface = ActionInterface([sdf_action_set])
-        self.model_name = model_name # e.g., "gpt-3.5-turbo", the model used to generate text in edit_section()
+        self.action_interface = ActionInterface([edit_section_action_set])
+        self.model_name = model_name # e.g., "gpt-4", the model used to generate text in edit_section()
 
     def edit_title(self, title):
         self.title = title
@@ -260,9 +263,9 @@ class Document:
     
     def edit_section(self, section_index: str, editing_instructions: str, verbose: bool = False):
         """
-        This is the main function we will use to edit the document. It takes in a document and an edit instruction and return the edited document.
+        This is the main function we will use to edit the document.
 
-        The edit instruction is a natural language string that describes the edit we want to make.
+        The editing instructions is a natural language string that describes the edit we want the LLM to make.
         """
         prompt = self.create_edit_section_prompt(section_index, editing_instructions)
         self.action_interface.sdf_section = self.sections[section_index]

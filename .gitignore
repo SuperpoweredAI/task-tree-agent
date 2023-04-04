@@ -1,0 +1,5 @@
+# Ignore all text, pyc, and csv files
+*.txt
+*.csv
+*.pyc
+*.DS_Store
