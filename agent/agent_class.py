@@ -12,16 +12,15 @@ from task_class import Task
 from action_interface import ActionInterface, RESPONSE_FORMATTING_INSTRUCTIONS
 
 class Agent:
-    def __init__(self, task_description, action_sets, sdf_document=None, save_path="agent.pkl"):
+    def __init__(self, task_description, action_sets, save_path="agent.pkl"):
         self.task_tree = Task(description=task_description)
-        self.sdf_document = sdf_document # this is the document that the agent will be writing in writer mode
-        self.action_interface = ActionInterface(action_sets, task_tree=self.task_tree, sdf_document=self.sdf_document)
+        self.action_interface = ActionInterface(action_sets)
         self.save_path = save_path
 
-    def run(self, max_iterations=100, model_name="gpt-3.5-turbo", verbose=False):
+    def run(self, max_iterations=100, model_name="gpt-4", verbose=False):
         for _ in range(max_iterations):
             current_task = self.task_tree.find_next_task() # get the next task
-            self.action_interface.task_tree = current_task # update the task tree used in the action interface
+            self.action_interface.update_action_set_object("task_tree_management_action_set", current_task) # update the task tree used in the action interface to the current task
             if not current_task:
                 print("There are no more tasks to complete.")
                 break
@@ -30,7 +29,7 @@ class Agent:
             prompt = prompt_template.format(
                 local_task_tree=current_task.get_local_task_tree(),
                 agent_action_log=self.action_interface.format_agent_action_log(),
-                writer_mode_metadata=self.sdf_document.create_document_context(),
+                action_set_prompt_context=self.action_interface.get_action_set_prompt_context(),
                 available_actions=self.action_interface.get_available_actions_for_prompt(),
                 response_formatting_instructions=RESPONSE_FORMATTING_INSTRUCTIONS,
             )

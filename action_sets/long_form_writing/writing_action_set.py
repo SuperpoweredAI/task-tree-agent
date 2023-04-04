@@ -1,57 +1,59 @@
 """
 This module defines the interface between the task tree and the SDF
+
+The action_set_object is the SDF Document.
 """
 
-def edit_title(sdf_document, title):
-    sdf_document.edit_title(title)
+def edit_title(action_set_object, title):
+    action_set_object.edit_title(title)
 
-def update_outline(sdf_document, outline):
-    sdf_document.update_outline(outline)
+def update_outline(action_set_object, outline):
+    action_set_object.update_outline(outline)
 
-def add_character_description(sdf_document, name, description):
-    sdf_document.add_character_description(name, description)
+def add_character_description(action_set_object, name, description):
+    action_set_object.add_character_description(name, description)
 
-def update_character_description(sdf_document, name, description):
-    sdf_document.update_character_description(name, description)
+def update_character_description(action_set_object, name, description):
+    action_set_object.update_character_description(name, description)
 
-def remove_character_description(sdf_document, name):
-    sdf_document.remove_character_description(name)
+def remove_character_description(action_set_object, name):
+    action_set_object.remove_character_description(name)
 
-def add_location(sdf_document, name, description):
-    sdf_document.add_location(name, description)
+def add_location(action_set_object, name, description):
+    action_set_object.add_location(name, description)
 
-def update_location(sdf_document, name, description):
-    sdf_document.update_location(name, description)
+def update_location(action_set_object, name, description):
+    action_set_object.update_location(name, description)
 
-def remove_location(sdf_document, name):
-    sdf_document.remove_location(name)
+def remove_location(action_set_object, name):
+    action_set_object.remove_location(name)
 
-def add_theme(sdf_document, name, description):
-    sdf_document.add_theme(name, description)
+def add_theme(action_set_object, name, description):
+    action_set_object.add_theme(name, description)
 
-def update_theme(sdf_document, name, description):
-    sdf_document.update_theme(name, description)
+def update_theme(action_set_object, name, description):
+    action_set_object.update_theme(name, description)
 
-def remove_theme(sdf_document, name):
-    sdf_document.remove_theme(name)
+def remove_theme(action_set_object, name):
+    action_set_object.remove_theme(name)
 
-def add_section(sdf_document, index, title='', summary=''):
-    sdf_document.add_section(index, title, summary)
+def add_section(action_set_object, index, title='', summary=''):
+    action_set_object.add_section(index, title, summary)
 
-def move_section(sdf_document, index, direction):
-    sdf_document.move_section(index, direction)
+def move_section(action_set_object, index, direction):
+    action_set_object.move_section(index, direction)
 
-def merge_sections(sdf_document, index):
-    sdf_document.merge_sections(index)
+def merge_sections(action_set_object, index):
+    action_set_object.merge_sections(index)
 
-def split_section(sdf_document, index, split_index, new_title):
-    sdf_document.split_section(index, split_index, new_title)
+def split_section(action_set_object, index, split_index, new_title):
+    action_set_object.split_section(index, split_index, new_title)
 
-def edit_section(sdf_document, section_index, editing_instructions):
-    sdf_document.edit_section(section_index, editing_instructions)
+def edit_section(action_set_object, section_index, editing_instructions):
+    action_set_object.edit_section(section_index, editing_instructions)
 
-def read_and_analyze_section(sdf_document, section_index, analysis_instructions):
-    return sdf_document.read_and_analyze_section(section_index, analysis_instructions)
+def read_and_analyze_section(action_set_object, section_index, analysis_instructions):
+    return action_set_object.read_and_analyze_section(section_index, analysis_instructions)
 
 
 writing_actions_list = [
@@ -159,4 +161,4 @@ writing_actions_list = [
     },
 ]
 
-writing_action_set = {"name": "writer_mode_actions", "actions": writing_actions_list}
+writing_action_set = {"name": "writing_action_set", "actions": writing_actions_list}

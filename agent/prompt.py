@@ -16,8 +16,8 @@ In order to help you keep track of what actions you’ve recently taken, we have
 
 {agent_action_log}
 
-CURRENT DOCUMENT INFORMATION
-{writer_mode_metadata}
+CONTEXT
+{action_set_prompt_context}
 
 AVAILABLE ACTIONS
 Here are the actions you have at your disposal. These are the ONLY options you have for interacting with the world. Any text you output that does not properly request one or more of these actions will be ignored. These actions are formatted as Python functions.
@@ -28,5 +28,3 @@ RESPONSE FORMATTING INSTRUCTIONS
 {response_formatting_instructions}
 
 """.strip()
-
-#print (prompt_template)

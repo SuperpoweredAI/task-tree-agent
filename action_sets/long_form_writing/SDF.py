@@ -190,7 +190,7 @@ class Document:
         self.table_of_contents = [section.title for section in self.sections]
 
     # create a context string to be used in the prompt
-    def create_document_context(self):
+    def format_prompt_context(self):
 
         # Generate the prompt, starting with the human notes
         context_str = f"The following are some human-written notes about the document you're writing. You should pay careful attention to these notes and stick closely to any ideas conveyed in them.\n\nHuman Notes:\n{self.human_notes}\n\n"
@@ -246,7 +246,7 @@ class Document:
         return context_str
 
     def create_edit_section_prompt(self, section_index, editing_instructions):
-        document_context = self.create_document_context() # Create the document context string
+        document_context = self.format_prompt_context() # Create the document context string
         if document_context is None:
             return None
         current_section_context = self.format_section_for_prompt(section_index) # Create the current section context string
@@ -268,7 +268,7 @@ class Document:
         The editing instructions is a natural language string that describes the edit we want the LLM to make.
         """
         prompt = self.create_edit_section_prompt(section_index, editing_instructions)
-        self.action_interface.sdf_section = self.sections[section_index]
+        self.action_interface.update_action_set_object("edit_section_action_set", self.sections[section_index])
         response = openai_api_call(prompt, model_name=self.model_name, max_tokens=2000)
 
         if verbose:
@@ -278,7 +278,7 @@ class Document:
         self.action_interface.parse_response_and_perform_actions(response)
 
     def create_read_and_analyze_prompt(self, section_index, analysis_instructions):
-        document_context = self.create_document_context()
+        document_context = self.format_prompt_context()
         if document_context is None:
             return None
         current_section_context = self.format_section_for_prompt(section_index)

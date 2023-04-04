@@ -1,26 +1,39 @@
 import json
 
 class Action:
-    def __init__(self, name, when_to_use, arguments, action_function, action_set=None):
+    def __init__(self, name, when_to_use, arguments, action_function, action_set_name, action_set_object=None):
         self.name = name # function name, in string format, with parameters and their types
         self.when_to_use = when_to_use
         self.arguments = arguments
         self.action_function = action_function # callable function
-        self.action_set = action_set # the action set this action belongs to
+        self.action_set_name = action_set_name # name of the action set that contains this action
+        self.action_set_object = action_set_object # optional object used by the action set
 
     def perform(self, *args, **kwargs):
         return self.action_function(*args, **kwargs)
     
+
+class ActionSet:
+    def __init__(self, name, action_set_object):
+        self.name = name
+        self.action_set_object = action_set_object
+    
+    def format_prompt_context(self):
+        # look for a function called "format_prompt_context" in the action set object
+        if hasattr(self.action_set_object, "format_prompt_context"):
+            return self.action_set_object.format_prompt_context()
+        else:
+            return None
+
+    
 class ActionInterface:
     """
-    Contains a list of Action objects
+    Contains functions for working with action sets and performing actions.
     """
-    def __init__(self, action_sets, task_tree=None, sdf_document=None, sdf_section=None):
-        self.action_list = create_action_interface(action_sets) # available actions
-        self.task_tree = task_tree
-        self.sdf_document = sdf_document
+    def __init__(self, action_sets):
+        self.action_list = get_action_list(action_sets) # create list of Action objects
+        self.action_set_list = get_action_set_list(action_sets) # list of ActionSet objects
         self.agent_action_log = []
-        self.sdf_section = sdf_section
 
     def get_action(self, action_name):
         for action in self.action_list:
@@ -29,11 +42,27 @@ class ActionInterface:
                 return action
         return None
     
+    def get_action_set_prompt_context(self):
+        """
+        add additional context associated with each action set
+        """
+        context_str = ""
+        for action_set in self.action_set_list:
+            prompt_context = action_set.format_prompt_context()
+            if prompt_context:
+                context_str += prompt_context + "\n\n"
+        return context_str.strip()
+    
     def get_available_actions_for_prompt(self):
         available_actions_str = ""
         for action in self.action_list:
             available_actions_str += f"{action.name}\nUsage: {action.when_to_use}\n{action.arguments}\n\n"
         return available_actions_str.strip()
+    
+    def update_action_set_object(self, action_set_name, action_set_object):
+        for action in self.action_list:
+            if action.action_set_name == action_set_name:
+                action.action_set_object = action_set_object
     
     # Let's see if this works here
     def parse_response_and_perform_actions(self, response):
@@ -73,19 +102,8 @@ class ActionInterface:
                 self.agent_action_log.append(self.format_error_message(error_message, response)) # Add the error message to the agent's action log
                 continue
 
-            action_set = action_obj.action_set
-
-            # If this is a task tree management action, add the task tree object to the parameters
-            if action_set == "task_tree_management_actions":
-                parameters["task"] = self.task_tree
-
-            # If this is a writer mode action, add the SDF object to the parameters
-            if action_set == "writer_mode_actions":
-                parameters["sdf_document"] = self.sdf_document
-            
-            # If this is being used from the edit section function, add the SDF section to the parameters
-            if action_set == "sdf_action_set":
-                parameters["section"] = self.sdf_section
+            if action_obj.action_set_object is not None:
+                parameters["action_set_object"] = action_obj.action_set_object
 
             # Find the corresponding action object using the ActionInterface instance
             action_obj = self.get_action(action_name)
@@ -132,9 +150,10 @@ class ActionInterface:
         for action_str in self.agent_action_log[-num_actions_to_display:]:
             agent_action_log_str += f"{action_str}\n\n"
         return agent_action_log_str.strip()
+
     
-# create ActionInterface from list of action sets
-def create_action_interface(action_sets):
+# create list of Action objects from a list of action set dictionaries
+def get_action_list(action_sets):
     """
     - action_sets is a list of dictionaries
     - each dictionary contains the name of the action set, as well as a list of actions
@@ -146,10 +165,23 @@ def create_action_interface(action_sets):
     """
     action_list = []
     for action_set in action_sets:
-        action_set_name = action_set["name"]
+        action_set_name = action_set["name"] # get the action set name
+        action_set_object = action_set.get("object", None) # get the action set object, if it exists
         for action_info in action_set["actions"]:
-            action_list.append(Action(name=action_info["name"], when_to_use=action_info["when_to_use"], arguments=action_info["arguments"], action_function=action_info["function"], action_set=action_set_name))
+            action_list.append(Action(name=action_info["name"], when_to_use=action_info["when_to_use"], arguments=action_info["arguments"], action_function=action_info["function"], action_set_name=action_set_name, action_set_object=action_set_object))
     return action_list
+
+def get_action_set_list(action_sets):
+    """
+    - action_sets is a list of dictionaries
+    - each dictionary contains the name of the action set, as well as a list of actions
+    """
+    action_set_list = []
+    for action_set in action_sets:
+        action_set_name = action_set["name"] # get the action set name
+        action_set_object = action_set.get("object", None) # get the action set object, if it exists
+        action_set_list.append(ActionSet(name=action_set_name, action_set_object=action_set_object))
+    return action_set_list
 
 
 RESPONSE_FORMATTING_INSTRUCTIONS = """
