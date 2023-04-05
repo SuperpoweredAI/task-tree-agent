@@ -73,6 +73,8 @@ Is this better for interpretability and safety than just using a huge model and 
 
 Would an LLM system following a task tree, as described above, be an autonomous agent in the AI safety sense of the term? Would it be goal-directed? Yes, it would be trying to achieve its root goal at the top of the task tree. But it would be doing so by trying to emulate human thinking and behavior, since that’s the training objective for LLMs. If we trained an agent with RL to optimally traverse the task tree and perform actions, then that would be more agentic and potentially more dangerous. This task tree could also be used to build more of a genie or an oracle than an agent. All three forms of AI systems benefit from the ability to break things up into small connected pieces.
 
+With that said, an autonomous system like this certainly has the potential to be dangerous if precautions are not taken. We strongly urge you to not let it run continuously without monitoring if you've given it an Action Set that lets it take actions in the real world.
+
 ### Limitations
 - No context window management, meaning there’s nothing to stop the prompt from exceeding the 8k token limit
 - No long-term memory
