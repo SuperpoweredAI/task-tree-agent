@@ -25,7 +25,7 @@ def superpowered_kb_search(sp_kb_object, query):
 superpowered_kb_search_action = Action(
     name="superpowered_kb_search(query: str)",
     when_to_use="Use this when you want to search a knowledge base",
-    arguments="Arguments:\n - query (str): The query to search the knowledge base with."
+    arguments="Arguments:\n - query (str): The query to search the knowledge base with.",
     action_function=superpowered_kb_search,
 )
 
