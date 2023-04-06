@@ -1,9 +1,15 @@
 import pickle
-from utils import openai_api_call
-from prompt import prompt_template
+import os
+import sys
+
+# add task_tree_agent to the path. It's not installed as a package, so we need to add it to the path manually. It's in ../../task_tree_agent
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "task_tree_agent"))
+
+from agent.utils import openai_api_call
+from agent.prompt import prompt_template
 
 from action_sets.task_tree.task_class import Task
-from action_interface import ActionInterface, RESPONSE_FORMATTING_INSTRUCTIONS
+from agent.action_interface import ActionInterface, RESPONSE_FORMATTING_INSTRUCTIONS
 
 class Agent:
     def __init__(self, task_description, action_sets, save_path="agent.pkl"):

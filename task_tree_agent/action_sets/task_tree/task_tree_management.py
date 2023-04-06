@@ -1,4 +1,10 @@
-from task_class import Task
+import os
+import sys
+
+# add task_tree_agent to the path. It's not installed as a package, so we need to add it to the path manually. It's in ../../task_tree_agent
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "task_tree_agent"))
+
+from action_sets.task_tree.task_class import Task
 from agent.action_interface import Action, ActionSet
 
 # action functions for editing the action_set_object tree
@@ -23,20 +29,20 @@ task_tree_management_actions_list = [
     Action(
         name="break_into_subtasks(subtask_descriptions: list[str])",
         action_function=break_into_subtasks,
-        when_to_use="Use this function to break the current action_set_object into a list of subtasks.",
+        when_to_use="Use this function to break the current task into a list of subtasks.",
         arguments="Arguments:\n  - subtask_descriptions (list): This should be a list of strings, with each string specifying a subtask. The subtask strings should be provided in the order you would like to perform the tasks in."
     ),
     Action(
         name="mark_current_task_as_complete()",
         action_function=mark_current_task_as_complete,
-        when_to_use="Use this function to mark the current action_set_object as complete, so you can move on to the next action_set_object.",
+        when_to_use="Use this function to mark the current task as complete, so you can move on to the next task.",
         arguments="Arguments: None. This function takes no arguments, so you must use an empty set of Arguments when calling this function."
     ),
     Action(
         name="edit_task_description(task_index: int, new_description: str)",
         action_function=edit_task_description,
-        when_to_use="Use this function to edit the current action_set_object, one of the sibling tasks, or the parent action_set_object.",
-        arguments="Arguments:\n  - task_index (int): This is the index of the action_set_object that you would like to edit. This uses 1-indexing, so the first sibling action_set_object will have index 1, the second action_set_object will have index 2, etc. If you want to edit the parent action_set_object, use task_index=0. Note that you can only edit sibling tasks that have not yet been completed (i.e. the action_set_object index must either be zero, or it must be greater than or equal to the index of the current action_set_object).\n  - new_description (str): This is the new action_set_object description you would like to use for the action_set_object you’re editing. Be sure to provide sufficient detail for the action_set_object."
+        when_to_use="Use this function to edit the current task, one of the sibling tasks, or the parent task.",
+        arguments="Arguments:\n  - task_index (int): This is the index of the task that you would like to edit. This uses 1-indexing, so the first sibling action_set_object will have index 1, the second action_set_object will have index 2, etc. If you want to edit the parent action_set_object, use task_index=0. Note that you can only edit sibling tasks that have not yet been completed (i.e. the action_set_object index must either be zero, or it must be greater than or equal to the index of the current action_set_object).\n  - new_description (str): This is the new action_set_object description you would like to use for the action_set_object you’re editing. Be sure to provide sufficient detail for the action_set_object."
     ),
 ]
 

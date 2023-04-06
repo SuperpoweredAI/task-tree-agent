@@ -4,10 +4,16 @@ The following module contains the classes for the SDF document format, which is 
 This is an example of creating an action set that itself uses an agent w/ tools framework, which is why we import the ActionInterface class.
 """
 
+import os
+import sys
+
+# add task_tree_agent to the path. It's not installed as a package, so we need to add it to the path manually. It's in ../../task_tree_agent
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "task_tree_agent"))
+
 from agent.utils import openai_api_call
 from agent.action_interface import ActionInterface, RESPONSE_FORMATTING_INSTRUCTIONS
-from edit_section_action_set import edit_section_action_set
-from SDF_prompt_template import EDIT_SECTION, READ_AND_ANALYZE
+from action_sets.long_form_writing.edit_section_action_set import edit_section_action_set
+from action_sets.long_form_writing.SDF_prompt_template import EDIT_SECTION, READ_AND_ANALYZE
 
 class Element:
     def __init__(self, content):

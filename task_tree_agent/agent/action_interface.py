@@ -1,7 +1,7 @@
 import json
 
 class Action:
-    def __init__(self, name: str, when_to_use: str, arguments: str, action_function: function, action_set_name: str=None, action_set_object=None):
+    def __init__(self, name: str, when_to_use: str, arguments: str, action_function, action_set_name: str=None, action_set_object=None):
         self.name = name # function name, in string format, with arguments and their types - MUST identically match the function signature (except for arguments)
         self.when_to_use = when_to_use # description of when to use the action
         self.arguments = arguments # description of the arguments for the action, as a string
@@ -23,6 +23,11 @@ class ActionSet:
         for action in self.action_list:
             action.action_set_name = self.action_set_name
             action.action_set_object = self.action_set_object
+
+    def update_action_set_object(self, action_set_object):
+        self.action_set_object = action_set_object
+        for action in self.action_list:
+            action.action_set_object = action_set_object
     
     def format_prompt_context(self):
         # look for a function called "format_prompt_context" in the action set object
@@ -75,8 +80,11 @@ class ActionInterface:
         for action in self.action_list:
             if action.action_set_name == action_set_name:
                 action.action_set_object = action_set_object
+
+        for action_set in self.action_set_list:
+            if action_set.action_set_name == action_set_name:
+                action_set.action_set_object = action_set_object
     
-    # Let's see if this works here
     def parse_response_and_perform_actions(self, response):
         """
         This function relies on the LLM being prompted to respond with a JSON string containing a list of action dictionaries.
@@ -168,36 +176,12 @@ class ActionInterface:
         return agent_action_log_str.strip()
 
     
-# create list of Action objects from a list of action set dictionaries
+# create list of Action objects from a list of ActionSet objects
 def get_action_list(action_sets):
-    """
-    - action_sets is a list of dictionaries
-    - each dictionary contains the name of the action set, as well as a list of actions
-    - each action is a dictionary:
-        - "name": the name of the action (same as the function name), which accesses a dictionary containing:
-        - "function": the function to be called when the action is performed
-        - "when_to_use": a description of the action and when to use it
-        - "arguments": instructions for formatting the action in the LLM prompt
-    """
     action_list = []
     for action_set in action_sets:
-        action_set_name = action_set["name"] # get the action set name
-        action_set_object = action_set.get("object", None) # get the action set object, if it exists
-        for action_info in action_set["actions"]:
-            action_list.append(Action(name=action_info["name"], when_to_use=action_info["when_to_use"], arguments=action_info["arguments"], action_function=action_info["function"], action_set_name=action_set_name, action_set_object=action_set_object))
+        action_list.extend(action_set.action_list)
     return action_list
-
-def get_action_set_list(action_sets):
-    """
-    - action_sets is a list of dictionaries
-    - each dictionary contains the name of the action set, as well as a list of actions
-    """
-    action_set_list = []
-    for action_set in action_sets:
-        action_set_name = action_set["name"] # get the action set name
-        action_set_object = action_set.get("object", None) # get the action set object, if it exists
-        action_set_list.append(ActionSet(name=action_set_name, action_set_object=action_set_object))
-    return action_set_list
 
 
 RESPONSE_FORMATTING_INSTRUCTIONS = """

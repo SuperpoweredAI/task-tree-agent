@@ -1,8 +1,14 @@
+import os
+import sys
+
+# add task_tree_agent to the path. It's not installed as a package, so we need to add it to the path manually.
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "task_tree_agent"))
+
 import pickle
-from task_tree_agent.agent.agent_class import Agent
-from task_tree_agent.action_sets.task_tree.task_tree_management import task_tree_management_action_set
-from task_tree_agent.action_sets.long_form_writing.SDF import Document
-from task_tree_agent.action_sets.long_form_writing.writing_action_set import writing_action_set
+from agent.agent_class import Agent
+from action_sets.task_tree.task_tree_management import task_tree_management_action_set
+from action_sets.long_form_writing.SDF import Document
+from action_sets.long_form_writing.writing_action_set import writing_action_set
 
 task_description = "Write a long-form essay about the history of technology's impact on society."
 
@@ -20,7 +26,7 @@ file_name = "technology_and_society.pkl"
 model_name = "gpt-4" # "gpt-3.5-turbo"
 
 # initialize the SDF document
-writing_action_set.action_set_object = Document(title="Technology and Society", human_notes=human_notes, section_type="Section", model_name=model_name)
+writing_action_set.update_action_set_object(Document(title="Technology and Society", human_notes=human_notes, section_type="Section", model_name=model_name))
 
 pick_up_where_we_left_off = False
 
