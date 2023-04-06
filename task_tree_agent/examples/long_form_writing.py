@@ -9,6 +9,7 @@ from agent.agent_class import Agent
 from action_sets.task_tree.task_tree_management import task_tree_management_action_set
 from action_sets.long_form_writing.SDF import Document
 from action_sets.long_form_writing.writing_action_set import writing_action_set
+from action_sets.knowledge_retrieval.knowledge_retrieval_action_set import knowledge_retrieval_action_set, SuperpoweredKnowledgeBase
 
 task_description = "Write a long-form essay about the history of technology's impact on society."
 
@@ -25,8 +26,9 @@ The essay should be about 10,000 words long. It should be broken up into 4-6 sec
 file_name = "technology_and_society.pkl"
 model_name = "gpt-4" # "gpt-3.5-turbo"
 
-# initialize the SDF document
+# add necessary objects to the action sets
 writing_action_set.update_action_set_object(Document(title="Technology and Society", human_notes=human_notes, section_type="Section", model_name=model_name))
+knowledge_retrieval_action_set.update_action_set_object(SuperpoweredKnowledgeBase(kb_title="Technology and Society"))
 
 pick_up_where_we_left_off = False
 
