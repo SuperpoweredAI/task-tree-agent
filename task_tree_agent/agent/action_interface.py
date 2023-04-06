@@ -1,10 +1,10 @@
 import json
 
 class Action:
-    def __init__(self, name, when_to_use, arguments, action_function, action_set_name, action_set_object=None):
-        self.name = name # function name, in string format, with parameters and their types
-        self.when_to_use = when_to_use
-        self.arguments = arguments
+    def __init__(self, name: str, when_to_use: str, arguments: str, action_function: function, action_set_name: str=None, action_set_object=None):
+        self.name = name # function name, in string format, with arguments and their types - MUST identically match the function signature (except for arguments)
+        self.when_to_use = when_to_use # description of when to use the action
+        self.arguments = arguments # description of the arguments for the action, as a string
         self.action_function = action_function # callable function
         self.action_set_name = action_set_name # name of the action set that contains this action
         self.action_set_object = action_set_object # optional object used by the action set
@@ -14,9 +14,15 @@ class Action:
     
 
 class ActionSet:
-    def __init__(self, name, action_set_object):
-        self.name = name
+    def __init__(self, action_list: list, action_set_name: str, action_set_object):
+        self.action_list = action_list # list of Action objects
+        self.action_set_name = action_set_name # name of the action set
         self.action_set_object = action_set_object
+
+        # add the action set name and object to each action
+        for action in self.action_list:
+            action.action_set_name = self.action_set_name
+            action.action_set_object = self.action_set_object
     
     def format_prompt_context(self):
         # look for a function called "format_prompt_context" in the action set object
@@ -30,9 +36,9 @@ class ActionInterface:
     """
     Contains functions for working with action sets and performing actions.
     """
-    def __init__(self, action_sets):
-        self.action_list = get_action_list(action_sets) # create list of Action objects
-        self.action_set_list = get_action_set_list(action_sets) # list of ActionSet objects
+    def __init__(self, action_set_list):
+        self.action_set_list = action_set_list # save our list of ActionSet objects
+        self.action_list = get_action_list(action_set_list) # create list of all Action objects
         self.agent_action_log = []
 
     def get_action(self, action_name):
@@ -40,6 +46,12 @@ class ActionInterface:
             function_name = action.name.split("(")[0]
             if function_name == action_name:
                 return action
+        return None
+    
+    def get_action_set(self, action_set_name):
+        for action_set in self.action_set_list:
+            if action_set.action_set_name == action_set_name:
+                return action_set
         return None
     
     def get_action_set_prompt_context(self):
@@ -123,6 +135,8 @@ class ActionInterface:
     def format_action(self, action_obj, parameters, action_output):
         """
         Formats the action and its output into a string that can be displayed in the LLM prompt's agent action log section.
+
+        # TODO: summarize the action output if it is too long
         """
         # replace the task object in parameters with the task description
         if "task" in parameters:
@@ -144,6 +158,8 @@ class ActionInterface:
     def format_agent_action_log(self):
         """
         Formats the agent's action log into a string that can be displayed in the LLM prompt's agent action log section.
+
+        # TODO: add a parameter to specify how many actions to display
         """
         num_actions_to_display = 10
         agent_action_log_str = ""

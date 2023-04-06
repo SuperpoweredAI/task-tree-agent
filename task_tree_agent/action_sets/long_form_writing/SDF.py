@@ -4,14 +4,8 @@ The following module contains the classes for the SDF document format, which is 
 This is an example of creating an action set that itself uses an agent w/ tools framework, which is why we import the ActionInterface class.
 """
 
-import sys
-import os
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(current_dir+'/../../agent')
-
-from utils import openai_api_call
-from action_interface import ActionInterface, RESPONSE_FORMATTING_INSTRUCTIONS
+from agent.utils import openai_api_call
+from agent.action_interface import ActionInterface, RESPONSE_FORMATTING_INSTRUCTIONS
 from edit_section_action_set import edit_section_action_set
 from SDF_prompt_template import EDIT_SECTION, READ_AND_ANALYZE
 

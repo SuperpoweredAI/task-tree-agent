@@ -1,17 +1,8 @@
-import os
-import sys
 import pickle
-
-# add paths
-sys.path.append(os.path.join(os.path.dirname(__file__), "../action_sets/task_tree"))
-sys.path.append(os.path.join(os.path.dirname(__file__), "../action_sets/long_form_writing"))
-sys.path.append(os.path.join(os.path.dirname(__file__), "../agent/"))
-
-from action_interface import ActionInterface
-from agent_class import Agent
-from task_tree_management import task_tree_management_action_set
-from SDF import Document
-from writing_action_set import writing_action_set
+from task_tree_agent.agent.agent_class import Agent
+from task_tree_agent.action_sets.task_tree.task_tree_management import task_tree_management_action_set
+from task_tree_agent.action_sets.long_form_writing.SDF import Document
+from task_tree_agent.action_sets.long_form_writing.writing_action_set import writing_action_set
 
 task_description = "Write a long-form essay about the history of technology's impact on society."
 
@@ -29,8 +20,7 @@ file_name = "technology_and_society.pkl"
 model_name = "gpt-4" # "gpt-3.5-turbo"
 
 # initialize the SDF document
-sdf_document = Document(title="Untitled", human_notes=human_notes, section_type="Section", model_name=model_name)
-writing_action_set["object"] = sdf_document
+writing_action_set.action_set_object = Document(title="Technology and Society", human_notes=human_notes, section_type="Section", model_name=model_name)
 
 pick_up_where_we_left_off = False
 
@@ -48,7 +38,7 @@ def main():
         )
 
     # Run the agent for a specified number of iterations
-    agent.run(max_iterations=100, model_name=model_name, verbose=True)
+    agent.run(max_iterations=3, model_name=model_name, verbose=True)
 
     # Print the final task tree
     print("\nFinal Task Tree:")
@@ -56,7 +46,7 @@ def main():
 
     # Print the final SDF document
     print("\nFinal SDF Document:")
-    agent.sdf_document.display()
+    writing_action_set.action_set_object.display()
 
 
 if __name__ == "__main__":

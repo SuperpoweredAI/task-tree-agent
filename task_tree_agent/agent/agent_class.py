@@ -1,14 +1,8 @@
-import os
-import sys
 import pickle
 from utils import openai_api_call
 from prompt import prompt_template
 
-# add paths to action sets
-sys.path.append(os.path.join(os.path.dirname(__file__), "../action_sets/task_tree"))
-sys.path.append(os.path.join(os.path.dirname(__file__), "../action_sets/long_form_writing"))
-
-from task_class import Task
+from action_sets.task_tree.task_class import Task
 from action_interface import ActionInterface, RESPONSE_FORMATTING_INSTRUCTIONS
 
 class Agent:
