@@ -16,6 +16,10 @@ class Agent:
         self.task_tree = Task(description=task_description)
         self.action_interface = ActionInterface(action_sets)
         self.save_path = save_path
+        self.human_input_list = []
+
+    def format_human_input_list(self, max_messages=5):
+        return "\n".join([" - " + message for message in self.human_input_list[-max_messages:]])
 
     def run(self, max_iterations=100, model_name="gpt-4", verbose=False):
         for _ in range(max_iterations):
@@ -25,11 +29,18 @@ class Agent:
                 print("There are no more tasks to complete.")
                 break
 
+            # ask for human input
+            human_input = input("Do you have any guidance for me? Press enter to skip. ")
+            if not human_input:
+                human_input_for_prompt = "None"
+
             # construct the prompt
             prompt = prompt_template.format(
                 local_task_tree=current_task.get_local_task_tree(),
                 agent_action_log=self.action_interface.format_agent_action_log(),
                 action_set_prompt_context=self.action_interface.get_action_set_prompt_context(),
+                human_input_list=self.format_human_input_list(),
+                current_human_input=human_input_for_prompt,
                 available_actions=self.action_interface.get_available_actions_for_prompt(),
                 response_formatting_instructions=RESPONSE_FORMATTING_INSTRUCTIONS,
             )
@@ -38,13 +49,18 @@ class Agent:
             response = openai_api_call(prompt, model_name=model_name, temperature=0.2, max_tokens=1000)
             if verbose: 
                 print(f"Prompt sent to LLM:\n{prompt}\n")
-                print(f"Raw response from LLM:\n{response}\n")
+                
+            print(f"\nAGENT RESPONSE\n{response}\n")
             
             # parse the response and perform the requested actions
             self.action_interface.parse_response_and_perform_actions(response)  
 
             # print the task tree after each iteration
             if verbose: self.task_tree.print_tree()
+
+            # we want to save the human input for later
+            if human_input:
+                self.human_input_list.append(human_input.strip())
 
             # save the Agent object after each iteration
             with open(self.save_path, "wb") as f:

@@ -28,7 +28,7 @@ model_name = "gpt-4" # "gpt-3.5-turbo"
 
 # add necessary objects to the action sets
 writing_action_set.update_action_set_object(Document(title="Technology and Society", human_notes=human_notes, section_type="Section", model_name=model_name))
-knowledge_retrieval_action_set.update_action_set_object(SuperpoweredKnowledgeBase(kb_title="Technology and Society"))
+#knowledge_retrieval_action_set.update_action_set_object(SuperpoweredKnowledgeBase(kb_title="Technology and Society"))
 
 pick_up_where_we_left_off = False
 
@@ -46,7 +46,7 @@ def main():
         )
 
     # Run the agent for a specified number of iterations
-    agent.run(max_iterations=3, model_name=model_name, verbose=True)
+    agent.run(max_iterations=10, model_name=model_name, verbose=False)
 
     # Print the final task tree
     print("\nFinal Task Tree:")

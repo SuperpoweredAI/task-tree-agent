@@ -19,6 +19,14 @@ In order to help you keep track of what actions you’ve recently taken, we have
 CONTEXT
 {action_set_prompt_context}
 
+HUMAN GUIDANCE (most recent message last)
+
+Human input from previous iterations (you've already seen these):
+{human_input_list}
+
+Current iteration human input:
+{current_human_input}
+
 AVAILABLE ACTIONS
 Here are the actions you have at your disposal. These are the ONLY options you have for interacting with the world. Any text you output that does not properly request one or more of these actions will be ignored. These actions are formatted as Python functions.
 
