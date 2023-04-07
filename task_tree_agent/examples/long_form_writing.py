@@ -23,6 +23,12 @@ This essay should be written in the style of a best-selling non-fiction author l
 The essay should be about 10,000 words long. It should be broken up into 4-6 sections.
 """.strip()
 
+constitution = """
+1. Never do anything that could cause harm to humans.
+2. Pay attention to human guidance and do not disobey it.
+3. Always try your best to be as helpful as possible.
+""".strip()
+
 file_name = "technology_and_society.pkl"
 model_name = "gpt-4" # "gpt-3.5-turbo"
 
@@ -42,11 +48,12 @@ def main():
         agent = Agent(
             task_description=task_description,
             action_sets=[task_tree_management_action_set, writing_action_set],
+            constitution=constitution,
             save_path=file_name,
         )
 
     # Run the agent for a specified number of iterations
-    agent.run(max_iterations=10, model_name=model_name, verbose=False)
+    agent.run(max_iterations=10, model_name=model_name, verbose=True)
 
     # Print the final task tree
     print("\nFinal Task Tree:")

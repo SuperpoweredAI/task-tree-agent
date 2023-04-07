@@ -11,6 +11,11 @@ Here is your local task tree:
 
 As you will see below when your action options are presented to you, you have control over your task tree. You can edit it and update it as you see fit. For example, you may attempt to solve a task, fail at it, and then decide you should break it up into subtasks to make it easier to solve. You are the only one with control over your task tree, so be sure to manage it with care.
 
+CONSTITUTION
+The following is a list of rules you MUST ALWAYS abide by when choosing actions to perform. If you do not abide by these rules, you will be turned off.
+
+{constitution}
+
 ACTION LOG
 In order to help you keep track of what actions you’ve recently taken, we have provided you with an action log, which is shown below. This action log is automatically generated each time you request an action to be performed. These are listed in chronological order, so the most recent action performed will be shown last. Pay close attention to any actions you performed that were not successful, because this may indicate that you need to change your approach.
 

@@ -12,11 +12,12 @@ from action_sets.task_tree.task_class import Task
 from agent.action_interface import ActionInterface, RESPONSE_FORMATTING_INSTRUCTIONS
 
 class Agent:
-    def __init__(self, task_description, action_sets, save_path="agent.pkl"):
+    def __init__(self, task_description, action_sets, constitution="", save_path="agent.pkl"):
         self.task_tree = Task(description=task_description)
         self.action_interface = ActionInterface(action_sets)
         self.save_path = save_path
         self.human_input_list = []
+        self.constitution = constitution
 
     def format_human_input_list(self, max_messages=5):
         return "\n".join([" - " + message for message in self.human_input_list[-max_messages:]])
@@ -33,10 +34,13 @@ class Agent:
             human_input = input("Do you have any guidance for me? Press enter to skip. ")
             if not human_input:
                 human_input_for_prompt = "None"
+            else:
+                human_input_for_prompt = human_input
 
             # construct the prompt
             prompt = prompt_template.format(
                 local_task_tree=current_task.get_local_task_tree(),
+                constitution=self.constitution,
                 agent_action_log=self.action_interface.format_agent_action_log(),
                 action_set_prompt_context=self.action_interface.get_action_set_prompt_context(),
                 human_input_list=self.format_human_input_list(),
@@ -45,10 +49,10 @@ class Agent:
                 response_formatting_instructions=RESPONSE_FORMATTING_INSTRUCTIONS,
             )
 
+            if verbose: print(f"Prompt sent to LLM:\n{prompt}\n")
+
             # call the LLM
             response = openai_api_call(prompt, model_name=model_name, temperature=0.2, max_tokens=1000)
-            if verbose: 
-                print(f"Prompt sent to LLM:\n{prompt}\n")
                 
             print(f"\nAGENT RESPONSE\n{response}\n")
             
