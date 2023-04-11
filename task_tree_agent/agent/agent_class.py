@@ -19,10 +19,10 @@ class Agent:
         self.human_input_list = []
         self.constitution = constitution
 
-    def format_human_input_list(self, max_messages=5):
+    def format_human_input_list(self, max_messages=10):
         return "\n".join([" - " + message for message in self.human_input_list[-max_messages:]])
 
-    def run(self, max_iterations=100, model_name="gpt-4", verbose=False):
+    def run(self, max_iterations=10, model_name="gpt-4", verbose=False):
         for _ in range(max_iterations):
             current_task = self.task_tree.find_next_task() # get the next task
             self.action_interface.update_action_set_object("task_tree_management_action_set", current_task) # update the task tree used in the action interface to the current task
@@ -31,7 +31,7 @@ class Agent:
                 break
 
             # ask for human input
-            human_input = input("Do you have any guidance for me? Press enter to skip. ")
+            human_input = input("Do you have any guidance for me? Press enter to skip.\n\nUSER INPUT: ")
             if not human_input:
                 human_input_for_prompt = "None"
             else:
@@ -54,7 +54,8 @@ class Agent:
             # call the LLM
             response = openai_api_call(prompt, model_name=model_name, temperature=0.2, max_tokens=1000)
                 
-            print(f"\nAGENT RESPONSE\n{response}\n")
+            formatted_response = self.action_interface.format_response(response)
+            print(f"\nAGENT THOUGHTS: {formatted_response}\n")
             
             # parse the response and perform the requested actions
             self.action_interface.parse_response_and_perform_actions(response)  

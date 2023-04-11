@@ -53,7 +53,7 @@ def main():
         )
 
     # Run the agent for a specified number of iterations
-    agent.run(max_iterations=10, model_name=model_name, verbose=True)
+    agent.run(max_iterations=3, model_name=model_name, verbose=False)
 
     # Print the final task tree
     print("\nFinal Task Tree:")

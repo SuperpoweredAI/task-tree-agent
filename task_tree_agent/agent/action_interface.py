@@ -174,6 +174,14 @@ class ActionInterface:
         for action_str in self.agent_action_log[-num_actions_to_display:]:
             agent_action_log_str += f"{action_str}\n\n"
         return agent_action_log_str.strip()
+    
+    def format_response(self, response):
+        """
+        Formats the LLM response into a string that is suitable for displaying to the user.
+        """
+        # extract the scratchpad from the response (everything between 'Part 1) Temporary scratchpad' and 'Part 2) Action requests')
+        scratchpad = response[response.find("Part 1) Temporary scratchpad") + len("Part 1) Temporary scratchpad"):response.find("Part 2) Action requests")].strip()
+        return scratchpad
 
     
 # create list of Action objects from a list of ActionSet objects
