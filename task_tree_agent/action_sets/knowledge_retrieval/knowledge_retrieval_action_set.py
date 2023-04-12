@@ -1,6 +1,6 @@
 import os
 import sys
-from superpowered import get_knowledge_base
+from superpowered import get_knowledge_base # pip install superpowered-sdk
 
 # add task_tree_agent to the path. It's not installed as a package, so we need to add it to the path manually.
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..", "task_tree_agent"))
@@ -16,15 +16,16 @@ class SuperpoweredKnowledgeBase:
     def query(self, query):
         # make an API call to the Superpowered knowledge base using the SDK
         kb = get_knowledge_base(self.kb_title)
-        return kb.query(query, retriever_top_k=self.retriever_top_k, reranker_top_k=self.reranker_top_k)
+        search_results = kb.query(query, retriever_top_k=self.retriever_top_k, reranker_top_k=self.reranker_top_k, extract_and_summarize=True)
+        return search_results["summary"]
 
 
-def superpowered_kb_search(sp_kb_object, query):
-    return sp_kb_object.query(query)
+def superpowered_kb_search(action_set_object, query):
+    return action_set_object.query(query)
 
 superpowered_kb_search_action = Action(
     name="superpowered_kb_search(query: str)",
-    when_to_use="Use this when you want to search a knowledge base",
+    when_to_use="Use this when you want to search a knowledge base - this knowledge base currently contains the full text of the Investment Advisers Act of 1940.",
     arguments="Arguments:\n - query (str): The query to search the knowledge base with.",
     action_function=superpowered_kb_search,
 )

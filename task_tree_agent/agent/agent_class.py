@@ -53,6 +53,7 @@ class Agent:
 
             # call the LLM
             response = openai_api_call(prompt, model_name=model_name, temperature=0.2, max_tokens=1000)
+            if verbose: print(f"Raw response from LLM:\n{response}\n")
                 
             formatted_response = self.action_interface.format_response(response)
             print(f"\nAGENT THOUGHTS: {formatted_response}\n")
